@@ -15,12 +15,15 @@ k = 2*np.pi
 theta = np.linspace(-np.pi/2, np.pi/2, 1000)
 AF = np.zeros(theta.shape, dtype=np.complex128)
 
-for n in range(N):
-    AF += 1*np.exp(1j*k*n*d*np.cos(theta))
+ArrayWeights= np.array([-5.790, -2.050, -0.485, -1.177, -0.161, -1.00, 1.00, 1.161, 1.177, 0.485, 2.050, 5.790])
 
-# Plot the normalized pattern in dB vs. θ
+for n in range(N):
+    AF += ArrayWeights[n]*np.exp(1j*k*n*d*np.cos(theta))
+
+#Plot the normalized pattern in dB vs. θ
 norm = np.max(20*np.log10(np.abs(AF)))
 plt.plot(np.rad2deg(theta), 20*np.log10(np.abs(AF))-norm)
+#plt.plot(np.rad2deg(theta), 20*(np.abs(AF)))
 plt.xlabel('Angle (degrees)')
 plt.ylabel('Normalized magnitude (dB)')
 plt.title('Array pattern')
@@ -29,13 +32,9 @@ plt.grid()
 
 
 # Compute the directivity (from direct pattern integration)
-phi = np.linspace(0, 2*np.pi, 361)
-P = np.zeros(phi.shape, dtype=np.float64)
 
-for p in range(phi.shape[0]):
-    P[p] = np.sum(np.abs(AF*np.exp(-1j*k*d*np.cos(theta)*np.sin(phi[p]))))**2
-    
-directivity = 4*np.pi*np.max(P)/np.sum(P)
+
+directivity = 2*N*(d)
 print('Directivity =', directivity)
 
 # Compute the peak sidelobe level (first sidelobe) in dB
